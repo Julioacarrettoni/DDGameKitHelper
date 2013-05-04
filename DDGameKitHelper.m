@@ -292,9 +292,9 @@ static DDGameKitHelper *instanceOfGameKitHelper;
              leaderboardRequest.category = category;
              leaderboardRequest.timeScope = GKLeaderboardTimeScopeAllTime;
              leaderboardRequest.range = NSMakeRange(1,1);
-             [leaderboardRequest loadScoresWithCompletionHandler: ^(NSArray *playerScores, NSError *error) 
+             [leaderboardRequest loadScoresWithCompletionHandler: ^(NSArray *playerScores, NSError *leaderboardRequestError) 
               {
-                  if (error != nil)
+                  if (leaderboardRequestError != nil)
                   {
                       NSLog(@"unable to synchronize scores");
                       return;
@@ -317,7 +317,7 @@ static DDGameKitHelper *instanceOfGameKitHelper;
                   else if (gcScore == nil)
                   {
                       NSLog(@"%@(%lld,%lld): gc score missing. reporting local score", category, gcScore.value, localScore.value);
-                      [localScore reportScoreWithCompletionHandler:^(NSError* error) {}];
+                      [localScore reportScoreWithCompletionHandler:^(NSError* reportScoreError) {}];
                   }
                   
                   else if (localScore == nil)
@@ -330,7 +330,7 @@ static DDGameKitHelper *instanceOfGameKitHelper;
                   else if ([delegate compare:localScore.value to:gcScore.value])
                   {
                       NSLog(@"%@(%lld,%lld): local score more current than gc score. reporting local score", category, gcScore.value, localScore.value);
-                      [toReport reportScoreWithCompletionHandler:^(NSError* error) {}];
+                      [toReport reportScoreWithCompletionHandler:^(NSError* eportScoreError) {}];
                   }
                   
                   else if ([delegate compare:gcScore.value to:localScore.value])
@@ -379,7 +379,7 @@ static DDGameKitHelper *instanceOfGameKitHelper;
              if (gcAchievement == nil)
              {
                  NSLog(@"achievement %@ not in game center. reporting it", identifier);
-                 [[achievements objectForKey:identifier] reportAchievementWithCompletionHandler:^(NSError* error) {}];
+                 [[achievements objectForKey:identifier] reportAchievementWithCompletionHandler:^(NSError* reportAchievementError) {}];
              }
          }
          
